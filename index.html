@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Self-Destructing Notes App</title>
+<style>
+  body { font-family: Arial, sans-serif; margin: 20px; }
+  #login, #notes { max-width: 600px; margin: auto; }
+  #login { display: block; }
+  #notes { display: none; }
+  textarea { width: 100%; height: 300px; }
+  button { margin: 5px 5px 5px 0; padding: 8px 12px; }
+</style>
+</head>
+<body>
+
+<div id="login">
+  <h2>Login</h2>
+  <input type="password" id="password" placeholder="Enter Password" />
+  <button id="loginBtn">Login</button>
+  <p id="loginError" style="color:red; display:none;">Incorrect Password</p>
+</div>
+
+<div id="notes">
+  <h2>Your Notes</h2>
+  <textarea id="noteArea" placeholder="Write your notes here..."></textarea><br />
+  <label for="destructTime">Destruct Time (seconds): </label>
+  <input type="number" id="destructTime" min="1" placeholder="Enter seconds" />
+  <br />
+  <button id="setTimerBtn">Set Destruct Timer</button>
+  <button id="saveBtn">Save</button>
+  <button id="saveLogoutBtn">Save & Logout</button>
+  <button id="clearBtn">Clear</button>
+  <p id="timerStatus"></p>
+</div>
+
+<script src="app.js"></script>
+
+</body>
+</html>
