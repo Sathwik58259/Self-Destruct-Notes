@@ -1,6 +1,29 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <script type="module">
+  // Import the functions you need from the SDKs you need
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-app.js";
+  import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-analytics.js";
+  // TODO: Add SDKs for Firebase products that you want to use
+  // https://firebase.google.com/docs/web/setup#available-libraries
+
+  // Your web app's Firebase configuration
+  // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+  const firebaseConfig = {
+    apiKey: "AIzaSyAfQF0OUb1LapIkbIXZUpvyq-apRkiDZSA",
+    authDomain: "self-destruct-notes-2d92d.firebaseapp.com",
+    projectId: "self-destruct-notes-2d92d",
+    storageBucket: "self-destruct-notes-2d92d.firebasestorage.app",
+    messagingSenderId: "340561308003",
+    appId: "1:340561308003:web:599751fe5d95a3702e4b56",
+    measurementId: "G-M8KE6MB8XJ"
+  };
+
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+  const analytics = getAnalytics(app);
+</script>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Self-Destructing Notes App</title>
   <link rel="stylesheet" href="styles.css" />
