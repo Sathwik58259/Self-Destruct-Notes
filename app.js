@@ -25,27 +25,31 @@ loginBtn.addEventListener('click', () => {
   loadNotes();
 });
 
-function loadNotes() {
-  const savedNote = localStorage.getItem(`note_${currentPassword}`) || '';
-  noteArea.value = savedNote;
-
-  const timerEnd = localStorage.getItem(`destructTime_${currentPassword}`);
-  if (timerEnd) {
-    const remaining = (parseInt(timerEnd) - Date.now()) / 1000;
-    if (remaining > 0) {
-      startTimer(remaining);
-    } else {
-      clearNotes();
-    }
-  } else {
-    timerStatus.textContent = '';
-  }
-}
-
+// Save note to Firestore
 function saveNotes() {
-  localStorage.setItem(`note_${currentPassword}`, noteArea.value);
-  timerStatus.textContent = "Note saved.";
+  const noteText = noteArea.value;
+  db.collection("notes").doc(currentPassword).set({
+    content: noteText,
+    timestamp: Date.now()
+  }).then(() => {
+    timerStatus.textContent = "Note saved to cloud.";
+  }).catch(e => alert("Error saving note: " + e));
 }
+
+// Load note from Firestore
+function loadNotes() {
+  db.collection("notes").doc(currentPassword).get()
+    .then(doc => {
+      if (doc.exists) {
+        noteArea.value = doc.data().content || '';
+      } else {
+        noteArea.value = '';
+      }
+      timerStatus.textContent = '';
+    })
+    .catch(e => alert("Error loading note: " + e));
+}
+
 
 function clearNotes() {
   noteArea.value = '';
