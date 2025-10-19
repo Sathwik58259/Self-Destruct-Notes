@@ -1,10 +1,7 @@
-const password = "yourPassword"; // Set your desired password here
-
 const loginDiv = document.getElementById('login');
 const notesDiv = document.getElementById('notes');
 const passwordInput = document.getElementById('password');
 const loginBtn = document.getElementById('loginBtn');
-const loginError = document.getElementById('loginError');
 
 const noteArea = document.getElementById('noteArea');
 const destructTimeInput = document.getElementById('destructTime');
@@ -15,26 +12,28 @@ const clearBtn = document.getElementById('clearBtn');
 const timerStatus = document.getElementById('timerStatus');
 
 let destructTimer = null;
+let currentPassword = null;
 
-// Login functionality
 loginBtn.addEventListener('click', () => {
-  if (passwordInput.value === password) {
-    loginDiv.style.display = 'none';
-    notesDiv.style.display = 'block';
-    loginError.style.display = 'none';
-    loadNotes();
-  } else {
-    loginError.style.display = 'block';
+  currentPassword = passwordInput.value.trim();
+  if (!currentPassword) {
+    alert('Please enter a password');
+    return;
   }
+  loginDiv.style.display = 'none';
+  notesDiv.style.display = 'block';
+  loadNotes();
 });
 
-// Load notes from localStorage
+// Use password as key for localStorage items
 function loadNotes() {
-  const savedNote = localStorage.getItem('selfDestructNote');
+  const savedNote = localStorage.getItem(`note_${currentPassword}`);
   if (savedNote) {
     noteArea.value = savedNote;
+  } else {
+    noteArea.value = '';
   }
-  const timerEnd = localStorage.getItem('noteDestructTime');
+  const timerEnd = localStorage.getItem(`destructTime_${currentPassword}`);
   if (timerEnd) {
     const remaining = (parseInt(timerEnd) - Date.now()) / 1000;
     if (remaining > 0) {
@@ -42,27 +41,26 @@ function loadNotes() {
     } else {
       clearNotes();
     }
+  } else {
+    timerStatus.textContent = '';
   }
 }
 
-// Save notes to localStorage
 function saveNotes() {
-  localStorage.setItem('selfDestructNote', noteArea.value);
+  localStorage.setItem(`note_${currentPassword}`, noteArea.value);
   timerStatus.textContent = "Note saved.";
 }
 
-// Clear notes and localStorage
 function clearNotes() {
   noteArea.value = '';
-  localStorage.removeItem('selfDestructNote');
-  localStorage.removeItem('noteDestructTime');
+  localStorage.removeItem(`note_${currentPassword}`);
+  localStorage.removeItem(`destructTime_${currentPassword}`);
   if (destructTimer) {
     clearTimeout(destructTimer);
   }
   timerStatus.textContent = "Note cleared.";
 }
 
-// Set self destruct timer
 function startTimer(seconds) {
   timerStatus.textContent = `Note will self-destruct in ${Math.floor(seconds)} seconds.`;
   if (destructTimer) clearTimeout(destructTimer);
@@ -71,17 +69,16 @@ function startTimer(seconds) {
     alert('Note has self-destructed.');
     logout();
   }, seconds * 1000);
-  localStorage.setItem('noteDestructTime', Date.now() + seconds * 1000);
+  localStorage.setItem(`destructTime_${currentPassword}`, Date.now() + seconds * 1000);
 }
 
-// Logout functionality
 function logout() {
   notesDiv.style.display = 'none';
   loginDiv.style.display = 'block';
   passwordInput.value = '';
   timerStatus.textContent = '';
   if (destructTimer) clearTimeout(destructTimer);
-  localStorage.removeItem('noteDestructTime');
+  currentPassword = null;
 }
 
 setTimerBtn.addEventListener('click', () => {
@@ -105,3 +102,4 @@ saveLogoutBtn.addEventListener('click', () => {
 clearBtn.addEventListener('click', () => {
   clearNotes();
 });
+
