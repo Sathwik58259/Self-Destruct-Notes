@@ -17,7 +17,7 @@ let currentPassword = null;
 loginBtn.addEventListener('click', () => {
   currentPassword = passwordInput.value.trim();
   if (!currentPassword) {
-    alert('Please enter a password');
+    alert('Please enter a password.');
     return;
   }
   loginDiv.style.display = 'none';
@@ -25,14 +25,10 @@ loginBtn.addEventListener('click', () => {
   loadNotes();
 });
 
-// Use password as key for localStorage items
 function loadNotes() {
-  const savedNote = localStorage.getItem(`note_${currentPassword}`);
-  if (savedNote) {
-    noteArea.value = savedNote;
-  } else {
-    noteArea.value = '';
-  }
+  const savedNote = localStorage.getItem(`note_${currentPassword}`) || '';
+  noteArea.value = savedNote;
+
   const timerEnd = localStorage.getItem(`destructTime_${currentPassword}`);
   if (timerEnd) {
     const remaining = (parseInt(timerEnd) - Date.now()) / 1000;
@@ -57,6 +53,7 @@ function clearNotes() {
   localStorage.removeItem(`destructTime_${currentPassword}`);
   if (destructTimer) {
     clearTimeout(destructTimer);
+    destructTimer = null;
   }
   timerStatus.textContent = "Note cleared.";
 }
@@ -77,12 +74,15 @@ function logout() {
   loginDiv.style.display = 'block';
   passwordInput.value = '';
   timerStatus.textContent = '';
-  if (destructTimer) clearTimeout(destructTimer);
+  if (destructTimer) {
+    clearTimeout(destructTimer);
+    destructTimer = null;
+  }
   currentPassword = null;
 }
 
 setTimerBtn.addEventListener('click', () => {
-  const seconds = parseInt(destructTimeInput.value);
+  const seconds = parseInt(destructTimeInput.value, 10);
   if (!seconds || seconds < 1) {
     alert('Please enter a valid destruct time in seconds.');
     return;
@@ -90,16 +90,13 @@ setTimerBtn.addEventListener('click', () => {
   startTimer(seconds);
 });
 
-saveBtn.addEventListener('click', () => {
-  saveNotes();
-});
+saveBtn.addEventListener('click', saveNotes);
 
 saveLogoutBtn.addEventListener('click', () => {
   saveNotes();
   logout();
 });
 
-clearBtn.addEventListener('click', () => {
-  clearNotes();
-});
+clearBtn.addEventListener('click', clearNotes);
+
 
